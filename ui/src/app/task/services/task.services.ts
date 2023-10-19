@@ -32,7 +32,7 @@ export class TaskServices {
     );
   }
 
-  completeTask(taskId: string): Observable<string> {
+  completeTask(taskId: string): Observable<Task[]> {
     const url = `${this.baseUrl}/complete-task`;
     let params: HttpParams = new HttpParams();
     params = params.append('taskId', taskId);

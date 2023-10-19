@@ -94,16 +94,16 @@
                 </tr>
               </ng-container>
 
-              <ng-container *ngFor="let task of completedTasks">
-                <tr *ngFor="let filteredTask of filteredIncompleteTasks">
+              <ng-container *ngFor="let completedTask of completedTasks">
+                <tr>
                   <td class="table-cell table-cell--complete table-cell--complete--line-through">
-                    {{ filteredTask.id }}
+                    {{ completedTask.id }}
                   </td>
                   <td class="table-cell table-cell--complete table-cell--complete--line-through">
-                    {{ filteredTask.description }}
+                    {{ completedTask.description }}
                   </td>
                   <td class="table-cell table-cell--complete">
-                    {{ filteredTask.status }}
+                    {{ completedTask.status }}
                   </td>
                 </tr>
               </ng-container>

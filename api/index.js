@@ -52,32 +52,63 @@ app.post("/save-task", cors(corsOptions), jsonParser, (request, response) => {
     response.status(200).json(task);
 })
 
+// app.post("/complete-task", cors(), (request, response) => {
+//     const taskId = request.query['taskId'];
+//     if(!taskId || taskId === ""){
+//         response.status(400).send('bad request, no task id');
+//         return;
+//     }
+//     fs.readFile('../db/data.json', function (err, data) {
+//         if (err) {
+//             console.info('read failed: ' + err.message)
+//             response.status(400).send('failed to read data.json: ' + err.message)
+//         }
+//         let databaseTasks = JSON.parse(data)
+//         databaseTasks.forEach(dbTask => {
+//             if (Number(dbTask.id) === Number(taskId)) {
+//                 dbTask.status = "complete";
+//             };
+//         });
+//         fs.writeFile('../db/data.json', JSON.stringify(databaseTasks), function (err, data){
+//             if (err) {
+//                 console.info('update status failed: ' + err.message);
+//                 response.status(400).send('failed to read data.json: ' + err.message);
+//             }}
+//         );
+//     });
+//     response.status(200).json(databaseTasks)
+// })
+
 app.post("/complete-task", cors(), (request, response) => {
     const taskId = request.query['taskId'];
-    if(!taskId || taskId === ""){
-        response.status(400).send('bad request, no task id');
+    if (!taskId || taskId === "") {
+        response.status(400).send('Bad request, no task id');
         return;
     }
     fs.readFile('../db/data.json', function (err, data) {
         if (err) {
-            console.info('read failed: ' + err.message)
-            response.status(400).send('failed to read data.json: ' + err.message)
+            console.info('Read failed: ' + err.message);
+            response.status(400).send('Failed to read data.json: ' + err.message);
+        } else {
+            let databaseTasks = JSON.parse(data);
+            databaseTasks.forEach(dbTask => {
+                if (Number(dbTask.id) === Number(taskId)) {
+                    dbTask.status = "complete";
+                }
+            });
+            fs.writeFile('../db/data.json', JSON.stringify(databaseTasks), function (err) {
+                if (err) {
+                    console.info('Update status failed: ' + err.message);
+                    response.status(400).send('Failed to update data.json: ' + err.message);
+                } else {
+                    // Send the JSON response after the file has been updated
+                    response.status(200).json(databaseTasks);
+                }
+            });
         }
-        let databaseTasks = JSON.parse(data)
-        databaseTasks.forEach(dbTask => {
-            if (Number(dbTask.id) === Number(taskId)) {
-                dbTask.status = "complete";
-            };
-        });
-        fs.writeFile('../db/data.json', JSON.stringify(databaseTasks), function (err, data){
-            if (err) {
-                console.info('update status failed: ' + err.message);
-                response.status(400).send('failed to read data.json: ' + err.message);
-            }}
-        );
     });
-    response.status(200).json(data)
-})
+});
+
 
 app.listen(3000, () => {
     console.log("Listen on the port 3000...");

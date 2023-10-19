@@ -30,6 +30,7 @@ export class TasklistComponent implements OnInit, OnDestroy {
           this.errorText = null;
           this.tasks = tasks;
           this.updateTaskLists();
+          console.log(this.completedTasks);
         },
         error: (error) => {
           this.errorText = 'Error occured while fetching tasks.';
@@ -52,7 +53,9 @@ export class TasklistComponent implements OnInit, OnDestroy {
       this.taskServices.completeTask(item.id.toString()).subscribe({
         next: (res) => {
           this.errorText = null;
-          console.log(res);
+          this.tasks = res;
+          this.updateTaskLists();
+          console.log(this.completedTasks);
         },
         error: (error) => {
           this.errorText = 'Error completing task!';
