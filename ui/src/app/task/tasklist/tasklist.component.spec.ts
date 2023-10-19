@@ -1,19 +1,46 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TasklistComponent } from './tasklist.component';
+import { TaskServices } from '../services/task.services';
+import { Task } from '../model/task';
+import { from, of } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('TasklistComponent', () => {
   let component: TasklistComponent;
   let fixture: ComponentFixture<TasklistComponent>;
+  let taskServices: TaskServices;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TasklistComponent ]
-    })
-    .compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [TasklistComponent],
+      imports: [HttpClientModule]
+    });
 
     fixture = TestBed.createComponent(TasklistComponent);
     component = fixture.componentInstance;
+    taskServices = TestBed.inject(TaskServices);
+
+    // Stub the GET request for tasks
+    const mockTasks: Task[] = [
+      {
+        id: 1,
+        description: 'complete the BP3 ui code challenge',
+        status: 'incomplete',
+      },
+      {
+        id: 2,
+        description: 'showcase some cool angular skills',
+        status: 'incomplete',
+      },
+      {
+        id: 3,
+        description: 'have fun!',
+        status: 'incomplete',
+      },
+    ];
+
+    spyOn(taskServices, 'getTasks').and.returnValue(from(Promise.resolve(mockTasks)));
+
     fixture.detectChanges();
   });
 
@@ -21,19 +48,50 @@ describe('TasklistComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // should load tasks on load...
+  it('should load tasks on load', async () => {
+    await component.ngOnInit();
+    expect(component.tasks).toEqual([
+      {
+        id: 1,
+        description: 'complete the BP3 ui code challenge',
+        status: 'incomplete',
+      },
+      {
+        id: 2,
+        description: 'showcase some cool angular skills',
+        status: 'incomplete',
+      },
+      {
+        id: 3,
+        description: 'have fun!',
+        status: 'incomplete',
+      },
+    ]);
+  });
 
-  // should display error if error when fetching tasks
+  it('should create a task', async () => {
+    const mockTask: Task = {
+      id: 4,
+      description: 'New Task',
+      status: 'incomplete',
+    };
+    spyOn(taskServices, 'saveTask').and.returnValue(from(Promise.resolve(mockTask)));
 
-  // should create a task
+    component.newTaskName = 'New Task';
+    await component.onCreatTaskClick();
 
-  // Create task should be disabled if text field is empty
+    expect(component.tasks).toContain(mockTask);
+    expect(component.newTaskName).toBeNull();
+  });
 
-  // should throw error if creating task with id that already exists
+  it('should display an error message if special characters or numbers are entered for description', () => {
+    component.newTaskName = 'Invalid@Task';
+    component.validateNewTaskInput();
 
-  // should filter tasks by description
+    expect(component.showInputErrorWarning).toBeTruthy();
+  });
 
-  // should indicate to user that there are no results if filter does not return any matches
-
-  // should display an error message if special characters or numbers are enter for description
+  afterEach(() => {
+    // No need to verify HTTP requests since they are stubbed
+  });
 });
