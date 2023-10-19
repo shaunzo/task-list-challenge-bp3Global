@@ -49,10 +49,7 @@ app.post("/save-task", cors(corsOptions), jsonParser, (request, response) => {
         });
     });
 
-    // Simulate live server delay
-    setTimeout(() => {
-        response.status(200).json(task);
-    }, 4000);
+    response.status(200).json(task);
 })
 
 app.post("/complete-task", cors(), (request, response) => {
