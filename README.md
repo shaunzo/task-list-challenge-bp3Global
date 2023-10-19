@@ -1,3 +1,10 @@
+# Notes
+# to run app
+cd into /api and run `npm run start` to start up server
+then cd into /ui and run ng serve
+## to run ui unit tests
+from /ui directory run `ng test`
+
 # BP3 Angular Frontend
 Thank you for participating in the BP3 Coding Exercise. This is a small Angular project that captures the essence of
 the type of work that we do here at BP3.
