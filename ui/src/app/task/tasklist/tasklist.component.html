@@ -1,0 +1,117 @@
+<div class="w-1/2 mx-auto xl:max-w-none">
+  <div class="mt-4 -mb-3">
+    <div class="mb-3 flex flex-row gap-4">
+      <input
+        class="input"
+        placeholder="Create new task..."
+        type="text"
+        [(ngModel)]="newTaskName"
+        (ngModelChange)="validateNewTaskInput()"/>
+      <button [disabled]="!newTaskName || showInputErrorWarning" class="btn" (click)="onCreatTaskClick()">Create Task</button>
+    </div>
+
+    <div class="mb-3">
+      <input
+        class="input w-full"
+        placeholder="Type to filter tasks"
+        type="text"
+        (input)="filterTasks()"
+        [(ngModel)]="filterText"/>
+    </div>
+
+    <ng-container *ngIf="filterText && filteredIncompleteTasks.length === 0">
+      <div class="mb-3">
+        <app-alert-box
+          [text]="'There are no tasks matching that description.'"
+          [alertType]="'info'"
+        ></app-alert-box>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="errorText">
+      <div class="mb-3">
+        <app-alert-box
+          [text]="errorText"
+          [alertType]="'danger'"
+        ></app-alert-box>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="showInputErrorWarning">
+      <div class="mb-3">
+        <app-alert-box
+          [text]="'No special characters can be used for a task description!'"
+          [alertType]="'warning'"
+        ></app-alert-box>
+      </div>
+    </ng-container>
+
+    <div class="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25">
+      <div class="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]" style="background-position: 10px 10px;"></div>
+      <div class="relative rounded-xl overflow-auto">
+        <div class="shadow-sm overflow-hidden my-8">
+          <table class="border-collapse table-auto w-full text-sm">
+            <thead>
+              <tr>
+                <th class="table-header">
+                  Id
+                </th>
+                <th class="table-header">
+                  Description
+                </th>
+                <th class="table-header">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-slate-800">
+
+              <ng-container *ngIf="filteredIncompleteTasks.length === 0">
+                <tr *ngFor="let task of incompleteTasks">
+                  <td class="table-cell table-cell">
+                    {{ task.id }}
+                  </td>
+                  <td class="table-cell">
+                    {{ task.description }}
+                  </td>
+                  <td class="table-cell table-cell--action" (click)="completeTask(task)">
+                    {{ task.status }}
+                  </td>
+                </tr>
+              </ng-container>
+
+              <ng-container *ngIf="filteredIncompleteTasks.length > 0">
+                <tr *ngFor="let filteredTask of filteredIncompleteTasks">
+                  <td class="table-cell table-cell--action:hover">
+                    {{ filteredTask.id }}
+                  </td>
+                  <td class="table-cell table-cell--action:hover">
+                    {{ filteredTask.description }}
+                  </td>
+                  <td class="table-cell table-cell--action:hover">
+                    {{ filteredTask.status }}
+                  </td>
+                </tr>
+              </ng-container>
+
+              <ng-container *ngFor="let task of completedTasks">
+                <tr *ngFor="let filteredTask of filteredIncompleteTasks">
+                  <td class="table-cell table-cell--complete table-cell--complete--line-through">
+                    {{ filteredTask.id }}
+                  </td>
+                  <td class="table-cell table-cell--complete table-cell--complete--line-through">
+                    {{ filteredTask.description }}
+                  </td>
+                  <td class="table-cell table-cell--complete">
+                    {{ filteredTask.status }}
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

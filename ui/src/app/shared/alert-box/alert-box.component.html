@@ -1,0 +1,9 @@
+<div
+  class="alertbox"
+  [ngClass]="{
+    'alertbox--warning': alertType === 'warning',
+    'alertbox--info': alertType === 'info',
+    'alertbox--danger': alertType === 'danger'
+  }"
+  >{{ text }}
+</div>
